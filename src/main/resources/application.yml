@@ -1,1 +1,18 @@
 
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  application:
+    name: auction_RS
+  datasource:
+    url:
+    username: 
+    password: 
+  jpa:
+    show-sql: true
+server:
+  port: 8082
+jwt:
+  secret: 
