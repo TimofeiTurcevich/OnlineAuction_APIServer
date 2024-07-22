@@ -1,17 +1,1 @@
-spring:
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
-  application:
-    name: auction_RS
-  datasource:
-    url: jdbc:mysql://localhost:3306/auction_db
-    username: root
-    password: 1234
-  jpa:
-    show-sql: true
-server:
-  port: 8082
-jwt:
-  secret: Rtq8sVjZl3T7oEOWOJ/ZCMuRPz2fvXxTY68NWX9YIXk=
+
