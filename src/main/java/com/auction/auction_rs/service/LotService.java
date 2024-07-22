@@ -19,10 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,10 +39,10 @@ public class LotService {
         title = "%" + title.replaceAll(" ", "%") + "%";
 
         Page<Lot> allLots = switch (sortBy) {
-            case "dateAsc" -> lotRepository.getAllByTitleLikeOrderByEndDateAsc(title, pageable);
-            case "dateDesc" -> lotRepository.getAllByTitleLikeOrderByEndDateDesc(title, pageable);
-            case "priceDesc" -> lotRepository.getAllByTitleLikeSortedByMaxBetOrStartPriceDesc(title, pageable);
-            default -> lotRepository.getAllByTitleLikeSortedByMaxBetOrStartPriceAsc(title, pageable);
+            case "dateAsc" -> lotRepository.getAllByTitleLikeAndEndDateGreaterThanOrderByEndDateAsc(title, getCurrentStringDate(), pageable);
+            case "dateDesc" -> lotRepository.getAllByTitleLikeAndEndDateGreaterThanOrderByEndDateDesc(title, getCurrentStringDate(), pageable);
+            case "priceDesc" -> lotRepository.getAllByTitleLikeAndEndDateGreaterThanSortedByMaxBetOrStartPriceDesc(title, getCurrentStringDate(), pageable);
+            default -> lotRepository.getAllByTitleLikeAndEndDateGreaterThanSortedByMaxBetOrStartPriceAsc(title, getCurrentStringDate(), pageable);
         };
 
         return getLotDTOS(allLots, pageable);
@@ -63,13 +61,13 @@ public class LotService {
         title = "%" + title.replaceAll(" ", "%") + "%";
 
         Page<Lot> allLots = switch (sortBy) {
-            case "dateAsc" -> lotRepository.getAllByTitleLikeAndTagsInOrderByEndDateAsc(title, Set.of(tempt), pageable);
+            case "dateAsc" -> lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateAsc(title, Set.of(tempt), getCurrentStringDate(), pageable);
             case "dateDesc" ->
-                    lotRepository.getAllByTitleLikeAndTagsInOrderByEndDateDesc(title, Set.of(tempt), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateDesc(title, Set.of(tempt), getCurrentStringDate(), pageable);
             case "priceDesc" ->
-                    lotRepository.getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceDesc(title, Set.of(tempt), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceDesc(title, Set.of(tempt), getCurrentStringDate(), pageable);
             default ->
-                    lotRepository.getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceAsc(title, Set.of(tempt), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceAsc(title, Set.of(tempt), getCurrentStringDate(), pageable);
         };
 
         System.out.println(allLots);
@@ -83,13 +81,13 @@ public class LotService {
 
         Page<Lot> allLots = switch (sortBy) {
             case "dateAsc" ->
-                    lotRepository.getAllByTitleLikeAndTagsInOrderByEndDateAsc(title, tempt.getSubTags(), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateAsc(title, tempt.getSubTags(), getCurrentStringDate(), pageable);
             case "dateDesc" ->
-                    lotRepository.getAllByTitleLikeAndTagsInOrderByEndDateDesc(title, tempt.getSubTags(), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateDesc(title, tempt.getSubTags(), getCurrentStringDate(), pageable);
             case "priceDesc" ->
-                    lotRepository.getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceDesc(title, tempt.getSubTags(), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceDesc(title, tempt.getSubTags(), getCurrentStringDate(), pageable);
             default ->
-                    lotRepository.getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceAsc(title, tempt.getSubTags(), pageable);
+                    lotRepository.getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceAsc(title, tempt.getSubTags(), getCurrentStringDate(), pageable);
         };
 
         return getLotDTOS(allLots, pageable);
@@ -287,5 +285,10 @@ public class LotService {
         sortLotDTOS(sortBy, lotDTOS);
 
         return new PageImpl<>(lotDTOS, pageable, lots.size());
+    }
+
+    private String getCurrentStringDate(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(new Date());
     }
 }

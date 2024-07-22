@@ -9,6 +9,8 @@ import com.auction.auction_rs.repositories.UserImageRepository;
 import com.auction.auction_rs.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
@@ -29,7 +31,9 @@ public class UserServiceTest {
 
     private final AuthorityRepository authorityRepository = mock(AuthorityRepository.class);
 
-    private final UserService userService = new UserService(userRepository, userImageRepository, authorityRepository);
+    private final PasswordEncoder passwordEncoder = mock(BCryptPasswordEncoder.class);
+
+    private final UserService userService = new UserService(userRepository, userImageRepository, authorityRepository, passwordEncoder);
 
     private final User userResult = new User(
             1L,

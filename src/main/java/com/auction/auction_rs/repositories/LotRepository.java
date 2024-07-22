@@ -18,14 +18,14 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     List<Lot> getAllBy();
 
 
-    Page<Lot> getAllByTitleLikeOrderByEndDateAsc(String title, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndEndDateGreaterThanOrderByEndDateAsc(String title, String now, Pageable pageable);
 
-    Page<Lot> getAllByTitleLikeOrderByEndDateDesc(String title, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndEndDateGreaterThanOrderByEndDateDesc(String title, String now, Pageable pageable);
 
     @Query(
             value = """
                     SELECT l FROM Lot l
-                    WHERE l.title LIKE :title
+                    WHERE l.title LIKE :title AND l.endDate > :now
                     ORDER BY(
                         if(
                             (SELECT count(*) FROM Bet b WHERE b.lot = l)=0,
@@ -39,12 +39,12 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
                          WHERE l.title LIKE :title
                          """
     )
-    Page<Lot> getAllByTitleLikeSortedByMaxBetOrStartPriceDesc(String title, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndEndDateGreaterThanSortedByMaxBetOrStartPriceDesc(String title, String now, Pageable pageable);
 
     @Query(
             value = """
                     SELECT l FROM Lot l
-                    WHERE l.title LIKE :title
+                    WHERE l.title LIKE :title AND l.endDate > :now
                     ORDER BY(
                         if(
                             (SELECT count(*) FROM Bet b WHERE b.lot = l)=0,
@@ -58,22 +58,22 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
                          WHERE l.title LIKE :title
                          """
     )
-    Page<Lot> getAllByTitleLikeSortedByMaxBetOrStartPriceAsc(String title, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndEndDateGreaterThanSortedByMaxBetOrStartPriceAsc(String title, String now, Pageable pageable);
 
     Optional<Lot> getLotById(Long id);
 
     List<Lot> getAllByTagsIn(Set<SubTag> tags);
 
-    Page<Lot> getAllByTitleLikeAndTagsInOrderByEndDateAsc(String title, Set<SubTag> tags, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateAsc(String title, Set<SubTag> tags, String now, Pageable pageable);
 
-    Page<Lot> getAllByTitleLikeAndTagsInOrderByEndDateDesc(String title, Set<SubTag> tags, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndTagsInAndEndDateGreaterThanOrderByEndDateDesc(String title, Set<SubTag> tags, String now, Pageable pageable);
 
     @Query(
             value = """
                 SELECT DISTINCT l
                 FROM Lot l
                 JOIN l.tags t
-                WHERE t IN :tags AND l.title LIKE :title
+                WHERE t IN :tags AND l.title LIKE :title AND l.endDate > :now
                     ORDER BY(
                         if(
                             (SELECT count(*) FROM Bet b WHERE b.lot = l)=0,
@@ -87,14 +87,14 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
                          WHERE l.title LIKE :title
                          """
     )
-    Page<Lot> getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceDesc(String title, Set<SubTag> tags, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceDesc(String title, Set<SubTag> tags, String now, Pageable pageable);
 
     @Query(
             value = """
                 SELECT DISTINCT l
                 FROM Lot l
                 JOIN l.tags t
-                WHERE t IN :tags AND l.title LIKE :title
+                WHERE t IN :tags AND l.title LIKE :title AND l.endDate > :now
                     ORDER BY(
                         if(
                             (SELECT count(*) FROM Bet b WHERE b.lot = l)=0,
@@ -108,5 +108,5 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
                          WHERE l.title LIKE :title
                          """
     )
-    Page<Lot> getAllByTitleLikeAndTagsInSortedByMaxBetOrStartPriceAsc(String title, Set<SubTag> tags, Pageable pageable);
+    Page<Lot> getAllByTitleLikeAndTagsInAndEndDateGreaterThanSortedByMaxBetOrStartPriceAsc(String title, Set<SubTag> tags, String now, Pageable pageable);
 }
